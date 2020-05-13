@@ -10,9 +10,6 @@ use Lin\Coinbase\Exceptions\Exception;
 
 class Request
 {
-    /**
-     * 是否开启Coinbase测试账号，需要先去申请测试账号。
-     * */
     protected $key='';
     
     protected $secret='';
@@ -37,13 +34,14 @@ class Request
     {
         $this->key=$data['key'] ?? '';
         $this->secret=$data['secret'] ?? '';
-        $this->host=$data['host'] ?? 'https://www.Coinbase.com';
+        $this->passphrase = $data['passphrase'] ?? '';
+        $this->host=$data['host'] ?? '';
         
         $this->options=$data['options'] ?? [];
     }
     
     /**
-     * 认证
+     * 
      * */
     protected function auth(){
         $this->nonce();
@@ -56,46 +54,53 @@ class Request
     }
     
     /**
-     * 过期时间
+     * 
      * */
     protected function nonce(){
-        $this->nonce = (string) number_format(round(microtime(true) * 100000), 0, '.', '');
+        $this->nonce=time();
     }
     
     /**
-     * 签名
+     * 
      * */
     protected function signature(){
-        $endata=http_build_query($this->data);
-        $this->signature=hash_hmac('sha256', $this->type.$this->path.$this->nonce.$endata, $this->secret);
-    }
-    
-    /**
-     * 默认头部信息
-     * */
-    protected function headers(){
-        $this->headers=[
-            'accept' => 'application/json',
-        ];
+        $body='';
+        $path=$this->type.$this->path;
         
-        if(!empty($this->key) && !empty($this->secret)) {
-            $this->headers=array_merge($this->headers,[
-                'api-expires'      => $this->nonce,
-                'api-key'=>$this->key,
-                'api-signature' => $this->signature,
-            ]);
+        if (!empty($this->data)) {
+            if($this->type=='GET') {
+                $path.='?'.http_build_query($this->data);
+            }else{
+                $body=json_encode($this->data);
+            }
         }
         
-        if(!empty($this->data)) $this->headers['content-type']='application/x-www-form-urlencoded';
+        $plain = $this->nonce . $path . $body;
+        
+        $this->signature = base64_encode(hash_hmac('sha256', $plain, base64_decode($this->secret), true));
     }
     
     /**
-     * 请求设置
+     * 
+     * */
+    protected function headers(){
+        $this->headers= [
+            'Content-Type' => 'application/json',
+            
+            'CB-ACCESS-KEY'        => $this->key,
+            'CB-ACCESS-SIGN'       => $this->signature,
+            'CB-ACCESS-TIMESTAMP'  => $this->nonce,
+            'CB-ACCESS-PASSPHRASE' => $this->passphrase,
+        ];
+    }
+    
+    /**
+     * 
      * */
     protected function options(){
         $this->options=array_merge([
             'headers'=>$this->headers,
-            //'verify'=>false   //关闭证书认证
+            //'verify'=>false
         ],$this->options);
         
         $this->options['timeout'] = $this->options['timeout'] ?? 60;
@@ -110,25 +115,32 @@ class Request
     }
     
     /**
-     * 发送http
+     * 
      * */
     protected function send(){
         $client = new \GuzzleHttp\Client();
         
-        if(!empty($this->data)) $this->options['form_params']=$this->data;
+        $url=$this->host.$this->path;
         
-        $response = $client->request($this->type, $this->host.$this->path, $this->options);
-        print_r($response->getHeaders());
+        if(!empty($this->data)) {
+            if($this->type=='GET') {
+                $url.='?'.http_build_query($this->data);
+            }else{
+                $this->options['body']=json_encode($this->data);
+            }
+        }
+        
+        $response = $client->request($this->type, $url, $this->options);
+        
         return $response->getBody()->getContents();
     }
     
     /*
-     * 执行流程
+     * 
      * */
     protected function exec(){
         $this->auth();
         
-        //可以记录日志
         try {
             return json_decode($this->send(),true);
         }catch (RequestException $e){
@@ -148,7 +160,6 @@ class Request
             
             $temp['_httpcode']=$e->getCode();
             
-            //TODO  该流程可以记录各种日志
             throw new Exception(json_encode($temp));
         }
     }
