@@ -1,12 +1,12 @@
 ### 建议您先阅读官方文档
 
-Huobi 文档地址 [https://huobiapi.github.io/docs/spot/v1/cn/#api](https://huobiapi.github.io/docs/spot/v1/cn/#api)
+Coinbase 文档地址 [https://docs.pro.coinbase.com](https://docs.pro.coinbase.com)
 
-所有接口方法的初始化都与huobi提供的方法相同。更多细节 [src/api](https://github.com/zhouaini528/huobi-php/tree/master/src/Api)
+所有接口方法的初始化都与coinbase提供的方法相同。更多细节 [src/api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api)
 
 大部分的接口已经完成，使用者可以根据我的设计方案继续扩展，欢迎与我一起迭代它。
 
-[English Document](https://github.com/zhouaini528/huobi-php/blob/master/README.md)
+[English Document](https://github.com/zhouaini528/coinbase-php/blob/master/README.md)
 
 ### 其他交易所API
 
@@ -22,17 +22,21 @@ Huobi 文档地址 [https://huobiapi.github.io/docs/spot/v1/cn/#api](https://huo
 
 [Kucoin](https://github.com/zhouaini528/kucoin-php)
 
+[Mxc](https://github.com/zhouaini528/mxc-php) 暂时未加入 Exchanges SDK
+
+[Coinbase](https://github.com/zhouaini528/coinbase-php) 暂时未加入 Exchanges SDK
+
 #### 安装方式
 ```
-composer require linwj/huobi
+composer require linwj/coinbase
 ```
 
-支持更多的请求设置 [More](https://github.com/zhouaini528/huobi-php/blob/master/tests/spot/proxy.php#L21)
+支持更多的请求设置
 ```php
-$huobi=new HuobiSpot();
+$coinbase=new Coinbase();
 
 //You can set special needs
-$huobi->setOptions([
+$coinbase->setOptions([
     //Set the request timeout to 60 seconds by default
     'timeout'=>10,
     
@@ -51,42 +55,50 @@ $huobi->setOptions([
 
 ### 现货交易 API
 
-Market related API [More](https://github.com/zhouaini528/huobi-php/blob/master/tests/spot/market.php)
+Market related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/product.php)
 ```php
-$huobi=new HuobiSpot();
+$coinbase=new Coinbase();
 
-//Get market data. This endpoint provides the snapshots of market data and can be used without verifications.
 try {
-    $result=$huobi->market()->getDepth([
-        'symbol'=>'btcusdt',
-        //'type'=>'step3'   default step0
+    $result=$coinbase->product()->getList();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->product()->getBook([
+        'product_id'=>'BTC-USD',
     ]);
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
 }
 
-//List trading pairs and get the trading limit, price, and more information of different trading pairs.
 try {
-    $result=$huobi->market()->getTickers();
+    $result=$coinbase->product()->getCandles([
+        'product_id'=>'BTC-USD',
+    ]);
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
 }
+
 ```
 
-Order related API [More](https://github.com/zhouaini528/huobi-php/blob/master/tests/spot/order.php)
+Order related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/order.php)
 ```php
-$huobi=new HuobiSpot($key,$secret);
+$coinbase=new Coinbase($key,$secret);
 
-//Place an Order
+//****************************LIMIT
 try {
-    $result=$huobi->order()->postPlace([
-        'account-id'=>$account_id,
-        'symbol'=>'btcusdt',
-        'type'=>'buy-limit',
-        'amount'=>'0.001',
-        'price'=>'100',
+    $result=$coinbase->order()->post([
+        //'client_oid'=>'',
+        'type'=>'limit',
+        'side'=>'sell',
+        'product_id'=>'BTC-USD',
+        'price'=>'20000',
+        'size'=>'0.01'
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -94,10 +106,10 @@ try {
 }
 sleep(1);
 
-//Get order details by order ID.
+//track the order
 try {
-    $result=$huobi->order()->get([
-        'order-id'=>$result['data'],
+    $result=$coinbase->order()->get([
+        'id'=>$result['id'],
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -105,38 +117,25 @@ try {
 }
 sleep(1);
 
-//Cancelling an unfilled order.
+//cancellation of order
 try {
-    $result=$huobi->order()->postSubmitCancel([
-        'order-id'=>$result['data']['id'],
+    $result=$coinbase->order()->delete([
+        'id'=>$result['id'],
+        //'id'=>'6bad6a7d-b01a-4a93-9e6e-e9934bcef4ef',
     ]);
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
 }
 
-//***********************Customize the order ID
-//Place an Order
+//****************************MARKET
 try {
-    $client_order_id=rand(10000,99999).rand(10000,99999);
-    $result=$huobi->order()->postPlace([
-        'account-id'=>$account_id,
-        'symbol'=>'btcusdt',
-        'type'=>'buy-limit',
-        'amount'=>'0.001',
-        'price'=>'1000',
-        'client-order-id'=>$client_order_id,
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-sleep(1);
-
-//Get order details by order ID.
-try {
-    $result=$huobi->order()->getClientOrder([
-        'clientOrderId'=>$client_order_id,
+    $result=$coinbase->order()->post([
+        //'client_oid'=>'',
+        'type'=>'market',
+        'side'=>'sell',
+        'product_id'=>'BTC-USD',
+        'size'=>'0.01',
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -144,10 +143,11 @@ try {
 }
 sleep(1);
 
-//Cancelling an unfilled order.
+//track the order
 try {
-    $result=$huobi->order()->postSubmitCancelClientOrder([
-        'client-order-id'=>$client_order_id,
+    $result=$coinbase->order()->get([
+        'id'=>$result['id'],
+        //'client_oid'=>''
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -155,22 +155,38 @@ try {
 }
 ```
 
-Accounts related API [More](https://github.com/zhouaini528/huobi-php/blob/master/tests/spot/account.php)
+Accounts related API [More]()
 ```php
-$huobi=new HuobiSpot($key,$secret);
+$coinbase=new Coinbase($key,$secret);
 
-//get the status of an account
 try {
-    $result=$huobi->account()->get();
+    $result=$coinbase->account()->getList();
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
 }
 
-//Get the balance of an account
 try {
-    $result=$huobi->account()->getBalance([
-        'account-id'=>$result['data'][0]['id']
+    $result=$coinbase->account()->get([
+        'account_id'=>'c74a36f5-4f2b-495b-be29-6eb2458d1b3a'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->account()->getHolds([
+        'account_id'=>'c74a36f5-4f2b-495b-be29-6eb2458d1b3a'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->account()->getLedger([
+        'account_id'=>'c74a36f5-4f2b-495b-be29-6eb2458d1b3a'
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -179,178 +195,6 @@ try {
 
 ```
 
-[更多用例](https://github.com/zhouaini528/huobi-php/tree/master/tests/spot)
+[更多用例](https://github.com/zhouaini528/coinbase-php/tree/master/tests)
 
-[更多API](https://github.com/zhouaini528/huobi-php/tree/master/src/Api/Spot)
-
-### 期货交割合约 API
-
-Contract related API [More](https://github.com/zhouaini528/huobi-php/blob/master/tests/future/contract.php)
-
-```php
-$huobi=new HuobiFuture($key,$secret);
-
-//Place an Order
-try {
-    $result=$huobi->contract()->postOrder([
-        'symbol'=>'BTC',//string    false   "BTC","ETH"...
-        'contract_type'=>'quarter',//   string  false   Contract Type ("this_week": "next_week": "quarter":)
-        'contract_code'=>'BTC190628',// string  false   BTC180914
-        'price'=>'100',//   decimal true    Price
-        'volume'=>'1',//    long    true    Numbers of orders (amount)
-        'direction'=>'buy',//   string  true    Transaction direction
-        'offset'=>'open',// string  true    "open", "close"
-        //'client_order_id'=>'',//long  false   Clients fill and maintain themselves, and this time must be greater than last time
-        //lever_rate    int true    Leverage rate [if“Open”is multiple orders in 10 rate, there will be not multiple orders in 20 rate
-        //order_price_type   string true    "limit", "opponent"
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//Get Information of an Order
-try {
-    $result=$huobi->contract()->postOrderInfo([
-        'order_id'=>'xxxx',//You can also 'xxxx,xxxx,xxxx' multiple ID
-        //'client_order_id'=>'xxxx',
-        'symbol'=>'BTC'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//Cancel an Order
-try {
-    $result=$huobi->contract()->postCancel([
-        'order_id'=>'xxxx',//You can also 'xxxx,xxxx,xxxx' multiple ID
-        //'client_order_id'=>'xxxx',
-        'symbol'=>'BTC'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-
-
-//User`s position Information
-try {
-    $result=$huobi->contract()->postPositionInfo();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//User`s Account Information
-try {
-    $result=$huobi->contract()->postAccountInfo();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//Get Contracts Information
-try {
-    $result=$huobi->contract()->getContractInfo();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-```
-
-Market related API [More](https://github.com/zhouaini528/huobi-php/blob/master/tests/future/market.php)
-```php
-$huobi=new HuobiFuture();
-
-//The Last Trade of a Contract
-try {
-    $result=$huobi->market()->getTrade([
-        'symbol'=>'BTC_CQ'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//Request a Batch of Trade Records of a Contract
-try {
-    $result=$huobi->market()->getHistoryTrade([
-        'symbol'=>'BTC_CQ',
-        //'size'=>100
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//Get Market Depth
-try {
-    $result=$huobi->market()->getDepth([
-        'symbol'=>'BTC_CQ',
-        'type'=>'step1'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-```
-
-[更多用例](https://github.com/zhouaini528/huobi-php/tree/master/tests/future)
-
-[更多API](https://github.com/zhouaini528/huobi-php/tree/master/src/Api/Futures)
-
-
-### 期货永续合约 API 
-
-```php
-$huobi=new HuobiSwap($key,$secret);
-
-//Place an Order
-try {
-    $result=$huobi->account()->postOrder([
-        'contract_code'=>'ETH-USD',//   string  false   BTC180914
-        'price'=>'100',//   decimal true    Price
-        'volume'=>'1',//    long    true    Numbers of orders (amount)
-        'direction'=>'buy',//   string  true    Transaction direction
-        'offset'=>'open',// string  true    "open", "close"
-        'order_price_type'=>'limit',//"limit", "opponent"
-        'lever_rate'=>20,//int  true    Leverage rate [if“Open”is multiple orders in 10 rate, there will be not multiple orders in 20 rate
-        
-        //'client_order_id'=>'',//long  false   Clients fill and maintain themselves, and this time must be greater than last time
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//Get Information of an Order
-try {
-    $result=$huobi->account()->postOrderInfo([
-        'order_id'=>$result['data']['order_id'],//You can also 'xxxx,xxxx,xxxx' multiple ID
-        //'client_order_id'=>'xxxx',
-        'contract_code'=>'ETH-USD'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-//Cancel an Order
-try {
-    $result=$huobi->account()->postCancel([
-        'order_id'=>$result['data'][0]['order_id'],//You can also 'xxxx,xxxx,xxxx' multiple ID
-        //'client_order_id'=>'xxxx',
-        'contract_code'=>'ETH-USD'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-```
-
-[更多用例](https://github.com/zhouaini528/huobi-php/tree/master/tests/swap)
-
-[更多API](https://github.com/zhouaini528/huobi-php/tree/master/src/Api/Swap)
-
+[更多API](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api)
