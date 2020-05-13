@@ -42,4 +42,31 @@ try {
     print_r(json_decode($e->getMessage(),true));
 }
 
+try {
+    $result=$coinbase->account()->get([
+        'account_id'=>'c74a36f5-4f2b-495b-be29-6eb2458d1b3a'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->account()->getHolds([
+        'account_id'=>'c74a36f5-4f2b-495b-be29-6eb2458d1b3a'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->account()->getLedger([
+        'account_id'=>'c74a36f5-4f2b-495b-be29-6eb2458d1b3a'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
 ?>

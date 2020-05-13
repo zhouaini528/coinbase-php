@@ -51,7 +51,7 @@ class Order extends Request
     /**
      *DELETE /orders
      * */
-    public function deleteList(array $data=[]){
+    public function deleteAll(array $data=[]){
         $this->type='DELETE';
         $this->path='/orders';
         $this->data=$data;
@@ -63,7 +63,7 @@ class Order extends Request
         DELETE /orders/client:<client_oid>
      * */
     public function delete(array $data=[]){
-        $this->type='GET';
+        $this->type='DELETE';
         
         if(isset($data['client_oid'])) {
             $this->path='/orders/client:'.$data['client_oid'];

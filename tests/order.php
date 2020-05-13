@@ -14,7 +14,7 @@ $passphrase='vdwpkkxvtt';
 
 //It is recommended to use the sandbox urls first https://api-public.sandbox.pro.coinbase.com
 //Default address https://api.pro.coinbase.com
-$host='https://api-public.sandbox.pro.coinbase.com';s
+$host='https://api-public.sandbox.pro.coinbase.com';
 
 $coinbase=new Coinbase($key,$secret,$passphrase,$host);
 
@@ -35,62 +35,90 @@ $coinbase->setOptions([
     //'verify'=>false,
 ]);
 
-//bargaining transaction
+/*
+ client_oid	[optional] Order ID selected by you to identify your order
+ type	[optional] limit or market (default is limit)
+ side	buy or sell
+ product_id	A valid product id
+ stp	[optional] Self-trade prevention flag
+ stop	[optional] Either loss or entry. Requires stop_price to be defined.
+ stop_price	[optional] Only if stop is defined. Sets trigger price for stop order.
+ 
+ LIMIT ORDER PARAMETERS
+ price	Price per bitcoin
+ size	Amount of base currency to buy or sell
+ time_in_force	[optional] GTC, GTT, IOC, or FOK (default is GTC)
+ cancel_after	[optional]* min, hour, day
+ post_only	[optional]** Post only flag
+ 
+ MARKET ORDER PARAMETERS
+ size	[optional]* Desired amount in base currency
+ funds	[optional]* Desired amount of quote currency to use
+ One of size or funds is required.
+ */
+
+//****************************LIMIT
 try {
     $result=$coinbase->order()->post([
-        'symbol'=>'XBTUSD',
-        'price'=>'100',
-        'side'=>'Buy',
-        'orderQty'=>'1',
-        'ordType'=>'Limit',
+        //'client_oid'=>'',
+        'type'=>'limit',
+        'side'=>'sell',
+        'product_id'=>'BTC-USD',
+        'price'=>'20000',
+        'size'=>'0.01'
     ]);
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
 }
+sleep(1);
 
 //track the order
 try {
-    $result=$coinbase->order()->getOne([
-        'symbol'=>'XBTUSD',
-        'orderID'=>$result['orderID'],
+    $result=$coinbase->order()->get([
+        'id'=>$result['id'],
     ]);
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
 }
-
-//update the order
-try {
-    $result=$coinbase->order()->put([
-        'symbol'=>'XBTUSD',
-        'orderID'=>$result['orderID'],
-        'price'=>'200',
-        'orderQty'=>'2',
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
+sleep(1);
 
 //cancellation of order
 try {
     $result=$coinbase->order()->delete([
-        'symbol'=>'XBTUSD',
-        'orderID'=>$result['orderID'],
+        'id'=>$result['id'],
+        //'id'=>'6bad6a7d-b01a-4a93-9e6e-e9934bcef4ef',
     ]);
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
 }
 
-
-//Get your orders
-/* try {
-    $result=$coinbase->order()->get();
+//****************************MARKET
+try {
+    $result=$coinbase->order()->post([
+        //'client_oid'=>'',
+        'type'=>'market',
+        'side'=>'sell',
+        'product_id'=>'BTC-USD',
+        'size'=>'0.01',
+    ]);
     print_r($result);
 }catch (\Exception $e){
     print_r(json_decode($e->getMessage(),true));
-} */
+}
+sleep(1);
+
+//track the order
+try {
+    $result=$coinbase->order()->get([
+        'id'=>$result['id'],
+        //'client_oid'=>''
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
 
 ?>
