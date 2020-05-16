@@ -26,6 +26,8 @@ Most of the interface is now complete, and the user can continue to extend it ba
 
 [Coinbase](https://github.com/zhouaini528/coinbase-php) Temporarily not connected to Exchanges SDK
 
+[ZB](https://github.com/zhouaini528/zb-php) Temporarily not connected to Exchanges SDK
+
 #### Installation
 ```
 composer require linwj/coinbase

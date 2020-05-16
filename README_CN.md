@@ -26,6 +26,8 @@ Coinbase 文档地址 [https://docs.pro.coinbase.com](https://docs.pro.coinbase.
 
 [Coinbase](https://github.com/zhouaini528/coinbase-php) 暂时未加入 Exchanges SDK
 
+[ZB](https://github.com/zhouaini528/zb-php) 暂时未加入 Exchanges SDK
+
 #### 安装方式
 ```
 composer require linwj/coinbase
