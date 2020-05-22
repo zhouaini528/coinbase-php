@@ -2,7 +2,7 @@
 
 Coinbase docs [https://docs.pro.coinbase.com](https://docs.pro.coinbase.com)
 
-All interface methods are initialized the same as those provided by okex. See details [src/api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api)
+All interface methods are initialized the same as those provided by Coinbase. See details [src/api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api)
 
 Most of the interface is now complete, and the user can continue to extend it based on my design, working with me to improve it.
 
