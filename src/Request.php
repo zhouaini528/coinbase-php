@@ -32,6 +32,10 @@ class Request
 
     protected $options=[];
 
+    protected $platform='';
+
+    protected $version='';
+
     public function __construct(array $data)
     {
         $this->key=$data['key'] ?? '';
@@ -40,6 +44,9 @@ class Request
         $this->host=$data['host'] ?? '';
 
         $this->options=$data['options'] ?? [];
+
+        $this->platform=$data['platform'] ?? [];
+        $this->version=$data['version'] ?? [];
     }
 
     /**

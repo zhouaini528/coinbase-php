@@ -48,6 +48,9 @@ class CoinbasePro
             'passphrase'=>$this->passphrase,
             'host'=>$this->host,
             'options'=>$this->options,
+
+            'platform'=>'coinbasepro',
+            'version'=>'v1',
         ];
     }
 

@@ -30,6 +30,9 @@ class Coinbase
             'passphrase'=>$this->passphrase,
             'host'=>$this->host,
             'options'=>$this->options,
+
+            'platform'=>'coinbase',
+            'version'=>'v2',
         ];
     }
 
