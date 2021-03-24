@@ -1,6 +1,8 @@
 ### It is recommended that you read the official document first
 
-Coinbase docs [https://docs.pro.coinbase.com](https://docs.pro.coinbase.com)
+Coinbase docs [https://developers.coinbase.com/api/v2](https://developers.coinbase.com/api/v2)
+
+Coinbase Pro docs [https://docs.pro.coinbase.com](https://docs.pro.coinbase.com)
 
 All interface methods are initialized the same as those provided by Coinbase. See details [src/api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api)
 
@@ -57,7 +59,7 @@ composer require linwj/coinbase
 
 Support for more request Settings
 ```php
-$coinbase=new Coinbase();
+$coinbase=new CoinbasePro();
 
 //You can set special needs
 $coinbase->setOptions([
@@ -77,11 +79,11 @@ $coinbase->setOptions([
 ]);
 ```
 
-### Coinbase Spot API
+### Coinbase Pro Spot API
 
 Market related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/product.php)
 ```php
-$coinbase=new Coinbase();
+$coinbase=new CoinbasePro();
 
 try {
     $result=$coinbase->product()->getList();
@@ -112,7 +114,7 @@ try {
 
 Order related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/order.php)
 ```php
-$coinbase=new Coinbase($key,$secret);
+$coinbase=new CoinbasePro($key,$secret,$passphrase);
 
 //****************************LIMIT
 try {
@@ -181,7 +183,7 @@ try {
 
 Accounts related API [More]()
 ```php
-$coinbase=new Coinbase($key,$secret);
+$coinbase=new CoinbasePro($key,$secret,$passphrase);
 
 try {
     $result=$coinbase->account()->getList();

@@ -4,9 +4,9 @@
  * @author lin <465382251@qq.com>
  * */
 
-use Lin\Coinbase\Coinbase;
+use Lin\Coinbase\CoinbasePro;
 
-require __DIR__ .'../../vendor/autoload.php';
+require __DIR__ .'../../../vendor/autoload.php';
 
 $key='7d57139517d145fb98143d38dbde9082';
 $secret='kMpFBoM+EeseFSv8oQiZKHz5jO543mO+lMZ41EW2lshp9zAqHzd7ymNznNDhU94ftamj5pHZxZRvCYRYp5peNQ==';
@@ -16,13 +16,13 @@ $passphrase='vdwpkkxvtt';
 //Default address https://api.pro.coinbase.com
 $host='https://api-public.sandbox.pro.coinbase.com';
 
-$coinbase=new Coinbase($key,$secret,$passphrase,$host);
+$coinbase=new CoinbasePro($key,$secret,$passphrase,$host);
 
 //You can set special needs
 $coinbase->setOptions([
     //Set the request timeout to 60 seconds by default
     'timeout'=>10,
-    
+
     //If you are developing locally and need an agent, you can set this
     //'proxy'=>true,
     //More flexible Settings
@@ -43,14 +43,14 @@ $coinbase->setOptions([
  stp	[optional] Self-trade prevention flag
  stop	[optional] Either loss or entry. Requires stop_price to be defined.
  stop_price	[optional] Only if stop is defined. Sets trigger price for stop order.
- 
+
  LIMIT ORDER PARAMETERS
  price	Price per bitcoin
  size	Amount of base currency to buy or sell
  time_in_force	[optional] GTC, GTT, IOC, or FOK (default is GTC)
  cancel_after	[optional]* min, hour, day
  post_only	[optional]** Post only flag
- 
+
  MARKET ORDER PARAMETERS
  size	[optional]* Desired amount in base currency
  funds	[optional]* Desired amount of quote currency to use

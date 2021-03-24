@@ -14,6 +14,8 @@ class Request
 
     protected $secret='';
 
+    protected $passphrase='';
+
     protected $host='';
 
     protected $nonce='';

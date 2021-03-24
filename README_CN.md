@@ -2,6 +2,8 @@
 
 Coinbase 文档地址 [https://docs.pro.coinbase.com](https://docs.pro.coinbase.com)
 
+Coinbase Pro 文档地址 [https://docs.pro.coinbase.com](https://docs.pro.coinbase.com)
+
 所有接口方法的初始化都与coinbase提供的方法相同。更多细节 [src/api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api)
 
 大部分的接口已经完成，使用者可以根据我的设计方案继续扩展，欢迎与我一起迭代它。
@@ -59,7 +61,7 @@ composer require linwj/coinbase
 
 支持更多的请求设置
 ```php
-$coinbase=new Coinbase();
+$coinbase=new CoinbasePro();
 
 //You can set special needs
 $coinbase->setOptions([
@@ -83,7 +85,7 @@ $coinbase->setOptions([
 
 Market related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/product.php)
 ```php
-$coinbase=new Coinbase();
+$coinbase=new CoinbasePro();
 
 try {
     $result=$coinbase->product()->getList();
@@ -114,7 +116,7 @@ try {
 
 Order related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/order.php)
 ```php
-$coinbase=new Coinbase($key,$secret);
+$coinbase=new CoinbasePro($key,$secret,$passphrase);
 
 //****************************LIMIT
 try {
@@ -183,7 +185,7 @@ try {
 
 Accounts related API [More]()
 ```php
-$coinbase=new Coinbase($key,$secret);
+$coinbase=new CoinbasePro($key,$secret,$passphrase);
 
 try {
     $result=$coinbase->account()->getList();

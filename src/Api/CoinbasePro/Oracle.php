@@ -3,18 +3,18 @@
  * @author lin <465382251@qq.com>
  * */
 
-namespace Lin\Coinbase\Api;
+namespace Lin\Coinbase\Api\CoinbasePro;
 
 use Lin\Coinbase\Request;
 
-class Fills extends Request
+class Oracle extends Request
 {
     /**
-     * GET /fills
+     * GET /oracle
      * */
     public function get(array $data=[]){
         $this->type='GET';
-        $this->path='/fills';
+        $this->path='/oracle';
         $this->data=$data;
         return $this->exec();
     }

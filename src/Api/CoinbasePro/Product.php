@@ -3,7 +3,7 @@
  * @author lin <465382251@qq.com>
  * */
 
-namespace Lin\Coinbase\Api;
+namespace Lin\Coinbase\Api\CoinbasePro;
 
 use Lin\Coinbase\Request;
 
@@ -18,7 +18,7 @@ class Product extends Request
         $this->data=$data;
         return $this->exec();
     }
-    
+
     /**
      *GET /products/<product-id>/book
      * */
@@ -28,7 +28,7 @@ class Product extends Request
         $this->data=$data;
         return $this->exec();
     }
-    
+
     /**
      *GET /products/<product-id>/ticker
      * */
@@ -38,7 +38,7 @@ class Product extends Request
         $this->data=$data;
         return $this->exec();
     }
-    
+
     /**
      *GET /products/<product-id>/trades
      * */
@@ -48,7 +48,7 @@ class Product extends Request
         $this->data=$data;
         return $this->exec();
     }
-    
+
     /**
      *GET /products/<product-id>/candles
      * */
@@ -58,7 +58,7 @@ class Product extends Request
         $this->data=$data;
         return $this->exec();
     }
-    
+
     /**
      *GET /products/<product-id>/stats
      * */
