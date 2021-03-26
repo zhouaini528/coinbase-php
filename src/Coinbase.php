@@ -5,16 +5,18 @@
 
 namespace Lin\Coinbase;
 
+use Lin\Coinbase\Api\Coinbase\Publics;
+use Lin\Coinbase\Api\Coinbase\Privates;
+
 class Coinbase
 {
     protected $key;
     protected $secret;
-    protected $passphrase;
     protected $host;
 
     protected $options=[];
 
-    function __construct(string $key='',string $secret='',string $host='https://api.pro.coinbase.com'){
+    function __construct(string $key='',string $secret='',string $host='https://api.coinbase.com'){
         $this->key=$key;
         $this->secret=$secret;
         $this->host=$host;
@@ -27,7 +29,6 @@ class Coinbase
         return [
             'key'=>$this->key,
             'secret'=>$this->secret,
-            'passphrase'=>$this->passphrase,
             'host'=>$this->host,
             'options'=>$this->options,
 
@@ -41,5 +42,19 @@ class Coinbase
      * */
     function setOptions(array $options=[]){
         $this->options=$options;
+    }
+
+    /**
+     *
+     * */
+    function publics(){
+        return new Publics($this->init());
+    }
+
+    /**
+     *
+     * */
+    function privates(){
+        return new Privates($this->init());
     }
 }

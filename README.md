@@ -59,6 +59,8 @@ composer require linwj/coinbase
 
 Support for more request Settings
 ```php
+$coinbase=new Coinbase();
+//or
 $coinbase=new CoinbasePro();
 
 //You can set special needs
@@ -79,9 +81,186 @@ $coinbase->setOptions([
 ]);
 ```
 
+### Coinbase Spot API
+
+Publics API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/coinbase/publics.php)
+
+```php
+$coinbase=new Coinbase();
+
+try {
+    $result=$coinbase->publics()->getTime();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->publics()->getCurrencies();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->publics()->getExchangeRates();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->publics()->getPricesBuy([
+        'currency_pair'=>'BTC-USD'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->publics()->getPricesSell([
+        'currency_pair'=>'BTC-USD'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->publics()->getPricesSpot([
+        'currency_pair'=>'BTC-USD'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+```
+
+Privates API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/coinbase/privates.php)
+```php
+//User
+try {
+    $result=$coinbase->privates()->getUsers();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->privates()->getUser([
+        'user_id'=>'fb352ff7-ce80-53ac-b0e1-7cfe51eca2ff'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->privates()->getUserAuth();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->privates()->putUser([
+        'name'=>'linwenjun'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+//Accounts
+try {
+    $result=$coinbase->privates()->getAccounts();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->privates()->getAccount([
+        'account_id'=>'BTC'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->privates()->putAccount([
+        'account_id'=>'BTC',
+        'name'=>'bbttcc'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+//Addresses
+try {
+    $result=$coinbase->privates()->getAccountAddresses([
+        'account_id'=>'BTC'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+//List transactions
+try {
+    $result=$coinbase->privates()->getAccountTransactions([
+        'account_id'=>'b1096c85-fbf8-5293-9424-5af475446ebd'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+//List buys
+try {
+    $result=$coinbase->privates()->getAccountBuys([
+        'account_id'=>'b1096c85-fbf8-5293-9424-5af475446ebd'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+try {
+    $result=$coinbase->privates()->getPaymentMethods();
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+//Place buy order
+try {
+    $result=$coinbase->privates()->postAccountBuys([
+        'account_id'=>'b1096c85-fbf8-5293-9424-5af475446ebd',
+        'amount'=>'1',
+        'currency'=>'BTC',
+        //'payment_method'=>'83562370-3e5c-51db-87da-752af5ab9559',
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r(json_decode($e->getMessage(),true));
+}
+
+```
+
+[More Test](https://github.com/zhouaini528/coinbase-php/tree/master/tests/coinbase)
+
+[More Api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api/Coinbase)
+
+
+
+
 ### Coinbase Pro Spot API
 
-Market related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/product.php)
+Market related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/coinbase_pro/product.php)
 ```php
 $coinbase=new CoinbasePro();
 
@@ -112,7 +291,7 @@ try {
 
 ```
 
-Order related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/order.php)
+Order related API [More](https://github.com/zhouaini528/coinbase-php/blob/master/tests/coinbase_pro/order.php)
 ```php
 $coinbase=new CoinbasePro($key,$secret,$passphrase);
 
@@ -221,6 +400,6 @@ try {
 
 ```
 
-[More Test](https://github.com/zhouaini528/coinbase-php/tree/master/tests)
+[More Test](https://github.com/zhouaini528/coinbase-php/tree/master/tests/coinbase_pro/)
 
-[More Api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api)
+[More Api](https://github.com/zhouaini528/coinbase-php/tree/master/src/Api/CoinbasePro/)

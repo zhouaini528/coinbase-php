@@ -86,7 +86,16 @@ class Request
 
         $plain = $this->nonce . $path . $body;
 
-        $this->signature = base64_encode(hash_hmac('sha256', $plain, base64_decode($this->secret), true));
+        switch ($this->platform){
+            case 'coinbase':{
+                $this->signature = hash_hmac('sha256', $plain, $this->secret);
+                break;
+            }
+            case 'coinbasepro':{
+                $this->signature = base64_encode(hash_hmac('sha256', $plain, base64_decode($this->secret), true));
+                break;
+            }
+        }
     }
 
     /**
@@ -95,12 +104,20 @@ class Request
     protected function headers(){
         $this->headers= [
             'Content-Type' => 'application/json',
-
             'CB-ACCESS-KEY'        => $this->key,
             'CB-ACCESS-SIGN'       => $this->signature,
             'CB-ACCESS-TIMESTAMP'  => $this->nonce,
-            'CB-ACCESS-PASSPHRASE' => $this->passphrase,
         ];
+        switch ($this->platform){
+            case 'coinbase':{
+                $this->headers['CB-VERSION']=date('Y-m-d',time());
+                break;
+            }
+            case 'coinbasepro':{
+                $this->headers['CB-ACCESS-PASSPHRASE']=$this->passphrase;
+                break;
+            }
+        }
     }
 
     /**
