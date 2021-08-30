@@ -18,6 +18,16 @@ class Product extends Request
         $this->data=$data;
         return $this->exec();
     }
+    
+    /**
+     *GET /products/<product-id>
+     * */
+    public function getProduct(array $data=[]){
+        $this->type='GET';
+        $this->path='/products/'.$data['product_id'];
+        $this->data=$data;
+        return $this->exec();
+    }
 
     /**
      *GET /products/<product-id>/book
