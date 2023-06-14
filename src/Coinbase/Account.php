@@ -3,9 +3,10 @@
  * @author lin <465382251@qq.com>
  * */
 
-namespace Lin\Coinbase\Api\Coinbase;
+namespace Lin\Coinbase\Coinbase;
 
 use Lin\Coinbase\Request;
+
 
 class Account extends Request
 {
